@@ -51,21 +51,21 @@ export async function POST(request: NextRequest) {
     })
 
     // Create default playlists
-    await prisma.playlist.createMany({
-      data: [
-        {
-          id: `watch-later-${user.id}`,
-          name: 'Watch Later',
-          description: 'Videos to watch later',
-          userId: user.id,
-        },
-        {
-          id: `liked-videos-${user.id}`,
-          name: 'Liked Videos',
-          description: 'Videos you have liked',
-          userId: user.id,
-        },
-      ],
+    await prisma.playlist.create({
+      data: {
+        id: `watch-later-${user.id}`,
+        name: 'Watch Later',
+        description: 'Videos to watch later',
+        userId: user.id,
+      },
+    })
+    await prisma.playlist.create({
+      data: {
+        id: `liked-videos-${user.id}`,
+        name: 'Liked Videos',
+        description: 'Videos you have liked',
+        userId: user.id,
+      },
     })
 
     return NextResponse.json(
