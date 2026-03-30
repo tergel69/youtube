@@ -1,0 +1,227 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  password      String?
+  handle        String?   @unique
+  description   String?
+  bannerImage   String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  accounts      Account[]
+  sessions      Session[]
+  videos        Video[]
+  comments      Comment[]
+  likes         Like[]
+  dislikes      Dislike[]
+  subscriptions Subscription[] @relation("subscriber")
+  subscribers   Subscription[] @relation("subscribedTo")
+  playlists     Playlist[]
+  history       History[]
+  notifications Notification[] @relation("recipient")
+  sentNotifications Notification[] @relation("sender")
+}
+
+model Video {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  videoUrl    String
+  thumbnailUrl String?
+  duration    Int      @default(0)
+  views       Int      @default(0)
+  isPublic    Boolean  @default(true)
+  isShort     Boolean  @default(false)
+  category    String?
+  tags        String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  comments    Comment[]
+  likes       Like[]
+  dislikes    Dislike[]
+  playlistVideos PlaylistVideo[]
+  history     History[]
+  notifications Notification[]
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  text      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  videoId   String
+  video     Video    @relation(fields: [videoId], references: [id], onDelete: Cascade)
+
+  parentId  String?
+  parent    Comment? @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies   Comment[] @relation("CommentReplies")
+
+  likes     CommentLike[]
+}
+
+model CommentLike {
+  id        String   @id @default(cuid())
+  isLike    Boolean
+  createdAt DateTime @default(now())
+
+  userId    String
+  commentId String
+  comment   Comment  @relation(fields: [commentId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, commentId])
+}
+
+model Like {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  videoId   String
+  video     Video    @relation(fields: [videoId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, videoId])
+}
+
+model Dislike {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  videoId   String
+  video     Video    @relation(fields: [videoId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, videoId])
+}
+
+model Subscription {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  subscriberId   String
+  subscriber     User   @relation("subscriber", fields: [subscriberId], references: [id], onDelete: Cascade)
+
+  subscribedToId String
+  subscribedTo   User   @relation("subscribedTo", fields: [subscribedToId], references: [id], onDelete: Cascade)
+
+  notifications  Boolean @default(true)
+
+  @@unique([subscriberId, subscribedToId])
+}
+
+model Playlist {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  isPublic    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  videos      PlaylistVideo[]
+}
+
+model PlaylistVideo {
+  id        String   @id @default(cuid())
+  position  Int
+  addedAt   DateTime @default(now())
+
+  playlistId String
+  playlist   Playlist @relation(fields: [playlistId], references: [id], onDelete: Cascade)
+
+  videoId   String
+  video     Video    @relation(fields: [videoId], references: [id], onDelete: Cascade)
+
+  @@unique([playlistId, videoId])
+}
+
+model History {
+  id        String   @id @default(cuid())
+  watchedAt DateTime @default(now())
+  progress  Int      @default(0)
+
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  videoId   String
+  video     Video    @relation(fields: [videoId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, videoId])
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  type      String
+  message   String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  recipientId String
+  recipient   User   @relation("recipient", fields: [recipientId], references: [id], onDelete: Cascade)
+
+  senderId  String?
+  sender    User?  @relation("sender", fields: [senderId], references: [id], onDelete: SetNull)
+
+  videoId   String?
+  video     Video? @relation(fields: [videoId], references: [id], onDelete: SetNull)
+}

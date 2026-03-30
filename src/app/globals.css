@@ -1,0 +1,304 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --header-height: 56px;
+  --sidebar-width: 240px;
+  --mini-sidebar-width: 72px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-youtube-dark text-white;
+  overflow-x: hidden;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-youtube-lightgray rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-youtube-text;
+}
+
+/* Hide scrollbar on hover containers */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Video player styles */
+.video-player {
+  @apply w-full aspect-video bg-black;
+}
+
+/* Shorts player styles */
+.shorts-player {
+  @apply w-full h-full;
+  aspect-ratio: 9/16;
+}
+
+/* Category chips scroll */
+.category-chips {
+  @apply flex gap-3 overflow-x-auto pb-2 hide-scrollbar;
+}
+
+/* YouTube-like chip buttons */
+.chip {
+  @apply px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition-colors;
+  @apply bg-youtube-gray hover:bg-youtube-lightgray;
+}
+
+.chip.active {
+  @apply bg-white text-black hover:bg-gray-200;
+}
+
+/* Video card hover effect */
+.video-card {
+  @apply transition-transform duration-200;
+}
+
+.video-card:hover .video-thumbnail {
+  @apply rounded-none;
+}
+
+/* Progress bar */
+.progress-bar {
+  @apply h-1 bg-youtube-red;
+  transition: width 0.1s linear;
+}
+
+/* Tooltip */
+.tooltip {
+  @apply absolute z-50 px-2 py-1 text-xs bg-youtube-gray rounded shadow-lg;
+  @apply opacity-0 invisible transition-all duration-200;
+}
+
+.tooltip-trigger:hover .tooltip {
+  @apply opacity-100 visible;
+}
+
+/* Loading skeleton */
+.skeleton {
+  @apply bg-youtube-gray animate-pulse rounded;
+}
+
+/* Dropdown menu */
+.dropdown-menu {
+  @apply absolute z-50 bg-youtube-gray rounded-lg shadow-lg py-2 min-w-[200px];
+  @apply opacity-0 invisible transition-all duration-200 transform scale-95;
+}
+
+.dropdown-menu.open {
+  @apply opacity-100 visible scale-100;
+}
+
+/* Modal overlay */
+.modal-overlay {
+  @apply fixed inset-0 z-50 bg-black/80 flex items-center justify-center;
+}
+
+.modal-content {
+  @apply bg-youtube-gray rounded-lg max-w-lg w-full mx-4 max-h-[90vh] overflow-y-auto;
+}
+
+/* Input styles */
+input[type='text'],
+input[type='email'],
+input[type='password'],
+input[type='search'],
+textarea {
+  @apply bg-youtube-dark border border-youtube-lightgray rounded px-3 py-2;
+  @apply focus:outline-none focus:border-youtube-blue;
+  @apply placeholder:text-youtube-text;
+}
+
+/* Button styles */
+.btn {
+  @apply px-4 py-2 rounded-full font-medium transition-colors;
+}
+
+.btn-primary {
+  @apply bg-youtube-blue text-black hover:bg-blue-400;
+}
+
+.btn-secondary {
+  @apply bg-youtube-gray hover:bg-youtube-lightgray;
+}
+
+.btn-danger {
+  @apply bg-red-600 hover:bg-red-700 text-white;
+}
+
+.btn-subscribe {
+  @apply bg-white text-black hover:bg-gray-200;
+}
+
+.btn-subscribed {
+  @apply bg-youtube-gray text-white hover:bg-youtube-lightgray;
+}
+
+/* Icon button */
+.icon-btn {
+  @apply p-2 rounded-full hover:bg-youtube-gray transition-colors;
+}
+
+/* Avatar */
+.avatar {
+  @apply rounded-full object-cover;
+}
+
+/* Sidebar styles */
+.sidebar-item {
+  @apply flex items-center gap-6 px-3 py-2 rounded-lg hover:bg-youtube-gray transition-colors;
+}
+
+.sidebar-item.active {
+  @apply bg-youtube-gray;
+}
+
+.mini-sidebar-item {
+  @apply flex flex-col items-center justify-center py-4 px-1 rounded-lg hover:bg-youtube-gray transition-colors;
+}
+
+/* Comment section */
+.comment {
+  @apply flex gap-3;
+}
+
+/* Notification badge */
+.notification-badge {
+  @apply absolute -top-1 -right-1 w-4 h-4 bg-youtube-red rounded-full text-[10px] flex items-center justify-center;
+}
+
+/* Video duration badge */
+.duration-badge {
+  @apply absolute bottom-1 right-1 px-1 py-0.5 bg-black/80 rounded text-xs font-medium;
+}
+
+/* Live badge */
+.live-badge {
+  @apply bg-youtube-red text-white px-1.5 py-0.5 rounded text-xs font-medium uppercase;
+}
+
+/* Shorts badge */
+.shorts-badge {
+  @apply text-youtube-red font-medium;
+}
+
+/* Video controls */
+.video-controls {
+  @apply absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent;
+  @apply opacity-0 transition-opacity duration-200;
+}
+
+.video-container:hover .video-controls {
+  @apply opacity-100;
+}
+
+/* Theater mode */
+.theater-mode {
+  @apply fixed inset-0 z-50 bg-black flex items-center justify-center;
+}
+
+/* Mini player */
+.mini-player {
+  @apply fixed bottom-4 right-4 w-80 aspect-video bg-black rounded-lg shadow-2xl z-50;
+}
+
+/* Search suggestions */
+.search-suggestions {
+  @apply absolute top-full left-0 right-0 bg-youtube-gray rounded-b-lg shadow-lg;
+  @apply max-h-[400px] overflow-y-auto;
+}
+
+.search-suggestion-item {
+  @apply flex items-center gap-3 px-4 py-2 hover:bg-youtube-hover cursor-pointer;
+}
+
+/* Responsive grid */
+.video-grid {
+  @apply grid gap-4;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+}
+
+@media (max-width: 640px) {
+  .video-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.2s ease-out;
+}
+
+.animate-slideUp {
+  animation: slideUp 0.3s ease-out;
+}
+
+.animate-slideIn {
+  animation: slideIn 0.3s ease-out;
+}
+
+/* Shorts scroll snap */
+.shorts-container {
+  @apply h-screen overflow-y-scroll snap-y snap-mandatory;
+}
+
+.shorts-item {
+  @apply h-screen snap-start flex items-center justify-center;
+}
